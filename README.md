@@ -16,7 +16,7 @@ the file name, for example.
 
 `rename-actions.watchers`
 
-An array of watchers, consisting of a glob to match files and an array of pairs of regex/snippt to locate and replace in the document.
+An array of watchers, consisting of a glob to match files and an array of pairs of regex/snippet to locate and replace in the document.
 Example:
 
 ```
@@ -26,11 +26,26 @@ Example:
         "actions": [
             {
                 "regex": "^// \\\\brief Filename: .*$",
-                "snippet": "// \\\\brief Filename: ${TM_FILENAME}"
+                "snippet": "// \\brief Filename: ${TM_FILENAME}"
             },
          ]
     }
 ]
+```
+
+If the regex contains capture groups, these can be reinserted into the snippet using `${CAPn}`. For example:
+
+```
+    "regex": "^TEST\\(\\s.*,\\s(.*)\\s\\)$",
+    "snippet": "TEST( ${TM_FILENAME_BASE}, ${CAP1} )"
+```
+will change:
+```
+TEST( OldFile, PerformTest )
+```
+into
+```
+TEST( NewFile, PerformTest )
 ```
 
 *Note: literal backslashes in the regex need to be double escaped.*

@@ -3,7 +3,7 @@
     "displayName": "Rename Actions",
     "description": "Perform actions when a file is renamed",
     "icon": "icon.png",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "publisher": "Gruntfuggly",
     "repository": "https://github.com/Gruntfuggly/rename-actions",
     "engines": {
@@ -30,5 +30,10 @@
     },
     "devDependencies": {
         "vscode": "^1.0.0"
+    },
+    "__metadata": {
+        "id": "cafc6ccf-5109-4e1b-8763-570ed4b130ca",
+        "publisherDisplayName": "Gruntfuggly",
+        "publisherId": "d4906d2e-f2ee-492d-9c7c-02b6160599ec"
     }
 }

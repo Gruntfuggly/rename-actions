@@ -33,8 +33,16 @@ function activate( context )
                                 var regex = new RegExp( action.regex, "gm" );
                                 while( ( match = regex.exec( content ) ) !== null )
                                 {
+                                    var snippet = action.snippet;
+                                    match.map( function( group, index )
+                                    {
+                                        if( index > 0 )
+                                        {
+                                            snippet = snippet.replace( new RegExp( "\\$\\{CAP" + index + "}", "g" ), match[ index ] );
+                                        }
+                                    } );
                                     var range = new vscode.Range( document.positionAt( match.index ), document.positionAt( match.index + match[ 0 ].length ) );
-                                    editor.insertSnippet( new vscode.SnippetString( action.snippet ), range );
+                                    editor.insertSnippet( new vscode.SnippetString( snippet ), range, { undoStopBefore: false, undoStopAfter: false } );
                                 }
                             } );
                         } );
