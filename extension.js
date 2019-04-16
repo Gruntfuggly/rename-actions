@@ -17,12 +17,15 @@ function activate( context )
         {
             watchers.map( function( watcher )
             {
-                var fileWwatcher = vscode.workspace.createFileSystemWatcher( watcher.glob );
-                fileWatchers.push( fileWwatcher );
-                context.subscriptions.push( fileWwatcher );
+                var fileWatcher = vscode.workspace.createFileSystemWatcher( watcher.glob );
+                console.log( "Created watcher for " + watcher.glob );
 
-                fileWwatcher.onDidCreate( function( uri )
+                fileWatchers.push( fileWatcher );
+                context.subscriptions.push( fileWatcher );
+
+                fileWatcher.onDidCreate( function( uri )
                 {
+                    console.log( uri + " changed..." );
                     vscode.workspace.openTextDocument( uri ).then( function( document )
                     {
                         vscode.window.showTextDocument( document ).then( function( editor )
@@ -31,6 +34,7 @@ function activate( context )
                             watcher.actions.map( function( action )
                             {
                                 var regex = new RegExp( action.regex, "gm" );
+                                console.log( "Replacing " + action.regex );
                                 while( ( match = regex.exec( content ) ) !== null )
                                 {
                                     var snippet = action.snippet;
@@ -42,6 +46,7 @@ function activate( context )
                                         }
                                     } );
                                     var range = new vscode.Range( document.positionAt( match.index ), document.positionAt( match.index + match[ 0 ].length ) );
+                                    console.log( "Inserting snippet " + snippet );
                                     editor.insertSnippet( new vscode.SnippetString( snippet ), range, { undoStopBefore: false, undoStopAfter: false } );
                                 }
                             } );
