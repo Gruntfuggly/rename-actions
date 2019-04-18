@@ -3,7 +3,7 @@
     "displayName": "Rename Actions",
     "description": "Perform actions when a file is renamed",
     "icon": "icon.png",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "publisher": "Gruntfuggly",
     "repository": "https://github.com/Gruntfuggly/rename-actions",
     "engines": {
@@ -23,7 +23,11 @@
             "properties": {
                 "rename-actions.watchers": {
                     "type": "array",
-                    "markdownDescription": "An array of watchers, consisting of a glob to match files and an array of pairs of regex/snippt to locate and replace in the document."
+                    "markdownDescription": "An array of watchers, consisting of a glob to match files and an array of glob/regex/snippet to locate and replace in the document."
+                },
+                "rename-actions.debug": {
+                    "type": "boolean",
+                    "markdownDescription": "Create a debug channel in the Output view"
                 }
             }
         }
@@ -35,5 +39,8 @@
         "id": "cafc6ccf-5109-4e1b-8763-570ed4b130ca",
         "publisherDisplayName": "Gruntfuggly",
         "publisherId": "d4906d2e-f2ee-492d-9c7c-02b6160599ec"
+    },
+    "dependencies": {
+        "micromatch": "^4.0.1"
     }
 }
