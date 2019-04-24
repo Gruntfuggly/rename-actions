@@ -28,6 +28,24 @@ function activate( context )
         }
     }
 
+    function substituteVariables( glob )
+    {
+        if( glob.indexOf( "${workspaceFolder}" ) > -1 && vscode.workspace.rootPath )
+        {
+            debug( "Replacing ${workspaceFolder} with '" + vscode.workspace.rootPath + "' in " + glob );
+            glob = glob.replace( /\$\{workspaceFolder\}/g, vscode.workspace.rootPath );
+        }
+        var envRegex = new RegExp( "\\$\\{(.*?)\\}", "g" );
+        glob = glob.replace( envRegex, function( match, name )
+        {
+            var replacement = process.env[ name ];
+            debug( "Replacing ${" + name + "} with '" + replacement + "' in " + glob );
+            return replacement ? replacement : "";
+        } );
+
+        return glob;
+    }
+
     function createFileWatchers()
     {
         fileWatchers.map( function( fileWatcher )
@@ -41,8 +59,10 @@ function activate( context )
         {
             watchers.map( function( watcher )
             {
-                var fileWatcher = vscode.workspace.createFileSystemWatcher( watcher.files );
-                debug( "Created watcher for " + watcher.files );
+                var filesGlob = substituteVariables( watcher.files );
+
+                var fileWatcher = vscode.workspace.createFileSystemWatcher( filesGlob );
+                debug( "Created watcher for " + filesGlob );
 
                 fileWatchers.push( fileWatcher );
                 context.subscriptions.push( fileWatcher );
@@ -50,48 +70,57 @@ function activate( context )
                 fileWatcher.onDidCreate( function( uri )
                 {
                     debug( uri + " changed..." );
-                    vscode.workspace.openTextDocument( uri ).then( function( document )
+                    var stop = false;
+                    watcher.actions.map( function( action )
                     {
-                        vscode.window.showTextDocument( document ).then( function( editor )
+                        var glob = substituteVariables( action.glob );
+
+                        if( glob )
                         {
-                            var stop = false;
-                            var content = editor.document.getText();
-                            watcher.actions.map( function( action )
+                            debug( "Check glob " + glob );
+                        }
+                        if( glob === undefined || ( stop === false && micromatch.isMatch( uri.fsPath, glob ) ) )
+                        {
+                            if( glob )
                             {
-                                if( action.glob )
+                                debug( "Matched" );
+                            }
+                            vscode.window.showTextDocument( uri, { preview: false } ).then( function( editor )
+                            {
+                                var content = editor.document.getText();
+                                var regex = new RegExp( action.regex, "gm" );
+                                debug( "Replacing " + action.regex );
+                                var matches = 0;
+                                while( ( match = regex.exec( content ) ) !== null )
                                 {
-                                    debug( "Check glob " + action.glob );
-                                }
-                                if( action.glob === undefined || ( stop === false && micromatch.isMatch( document.fileName, action.glob ) ) )
-                                {
-                                    if( action.glob )
+                                    var snippet = action.snippet;
+                                    match.map( function( group, index )
                                     {
-                                        debug( "Matched" );
-                                    }
-                                    var regex = new RegExp( action.regex, "gm" );
-                                    debug( "Replacing " + action.regex );
-                                    while( ( match = regex.exec( content ) ) !== null )
-                                    {
-                                        var snippet = action.snippet;
-                                        match.map( function( group, index )
+                                        if( index > 0 )
                                         {
-                                            if( index > 0 )
-                                            {
-                                                snippet = snippet.replace( new RegExp( "\\$\\{CAP" + index + "}", "g" ), match[ index ] );
-                                            }
-                                        } );
-                                        var range = new vscode.Range( document.positionAt( match.index ), document.positionAt( match.index + match[ 0 ].length ) );
-                                        debug( "Inserting snippet " + snippet );
-                                        editor.insertSnippet( new vscode.SnippetString( snippet ), range, { undoStopBefore: false, undoStopAfter: false } );
-                                    }
-                                    if( action.stop === true )
-                                    {
-                                        stop = true;
-                                        debug( "Stop processing actions" );
-                                    }
+                                            snippet = snippet.replace( new RegExp( "\\$\\{CAP" + index + "}", "g" ), match[ index ] );
+                                        }
+                                    } );
+                                    var range = new vscode.Range( document.positionAt( match.index ), document.positionAt( match.index + match[ 0 ].length ) );
+                                    debug( "Inserting snippet " + snippet );
+                                    editor.insertSnippet( new vscode.SnippetString( snippet ), range, { undoStopBefore: false, undoStopAfter: false } );
+                                    ++matches;
+                                }
+                                if( matches > 0 )
+                                {
+                                    debug( "Replaced " + matches + " instances" );
+                                }
+                                else
+                                {
+                                    debug( "No matches found" );
+                                }
+                                if( action.stop === true )
+                                {
+                                    stop = true;
+                                    debug( "Stop processing actions" );
                                 }
                             } );
-                        } );
+                        }
                     } );
                 } );
             } );

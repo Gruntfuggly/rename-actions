@@ -1,3 +1,9 @@
+# v0.0.4 - 2019-04-24
+- Don't open every file that changes (!)
+- Turn off preview for opened files
+- Allow environment variable (and ${workspaceFolder}) substitution in globs
+- Add extra debug output
+
 # v0.0.3 - 2019-04-18
 - Add debug output channel
 - Allow globs to apply to each action

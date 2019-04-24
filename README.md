@@ -25,6 +25,9 @@ glob is a standard javascript glob (using a vscode FileWatcher). The glob for
 each action uses [micromatch](https://github.com/micromatch/micromatch) which
 allows for more advanced patterns.
 
+Glob patterns can include environment variables such as `${USER}` and also the
+vscode specific `${workspaceFolder}`.
+
 Example:
 
 ```
@@ -69,36 +72,36 @@ TEST( NewFile, PerformTest )
 ```
 "rename-actions.watchers": [
     {
-        "files": "**/{*.h,*.cpp}",
+        "files": "${workspaceFolder}/{*.h,*.cpp}",
         "actions": [
             {
-                "glob": "*.h",
+                "glob": "${workspaceFolder}/*.h",
                 "regex": "^\\/\\*\\! \\\\file\\s*(.*)$",
                 "snippet": "/*! \\file   ${TM_FILENAME}"
             },
             {
-                "glob": "**/*.h",
+                "glob": "${workspaceFolder}/*.h",
                 "regex": "^#ifndef (.*)_H$",
                 "snippet": "#ifndef ${TM_FILENAME_BASE/(([A-Z]+)+([a-z_]+))?/$2${3:/upcase}${3:+_}/g}H"
             },
             {
-                "glob": "**/*.h",
+                "glob": "${workspaceFolder}/*.h",
                 "regex": "^#define (.*)_H$",
                 "snippet": "#define ${TM_FILENAME_BASE/(([A-Z]+)+([a-z_]+))?/$2${3:/upcase}${3:+_}/g}H"
             },
             {
-                "glob": "**/*.h",
+                "glob": "${workspaceFolder}/*.h",
                 "regex": "^#endif \\/\\*(.*)_H\\s\\*\\/$",
                 "snippet": "#endif /* ${TM_FILENAME_BASE/(([A-Z]+)+([a-z_]+))?/$2${3:/upcase}${3:+_}/g}H */"
             },
             {
-                "glob": "**/ut-*.cpp",
+                "glob": "${workspaceFolder}/gtest/ut-*.cpp",
                 "regex": "^TEST\\(\\s.*,\\s(.*)\\s\\)$",
                 "snippet": "TEST( ${TM_FILENAME/ut-(.*)\\..+$/$1/}, ${CAP1} )",
                 "stop": true
             },
             {
-                "glob": "**/*.cpp",
+                "glob": "${workspaceFolder}/*.cpp",
                 "regex": "^\\/\\*\\! \\\\file\\s*(.*)$",
                 "snippet": "/*! \\file   ${TM_FILENAME}"
             }
