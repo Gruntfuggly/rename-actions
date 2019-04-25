@@ -1,3 +1,6 @@
+# v0.0.5 - 2019-04-25
+- Fix document reference error
+
 # v0.0.4 - 2019-04-24
 - Don't open every file that changes (!)
 - Turn off preview for opened files

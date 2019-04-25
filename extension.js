@@ -89,7 +89,7 @@ function activate( context )
                             {
                                 var content = editor.document.getText();
                                 var regex = new RegExp( action.regex, "gm" );
-                                debug( "Replacing " + action.regex );
+                                debug( "Replacing " + action.regex + " in " + editor.document.fileName );
                                 var matches = 0;
                                 while( ( match = regex.exec( content ) ) !== null )
                                 {
@@ -101,7 +101,7 @@ function activate( context )
                                             snippet = snippet.replace( new RegExp( "\\$\\{CAP" + index + "}", "g" ), match[ index ] );
                                         }
                                     } );
-                                    var range = new vscode.Range( document.positionAt( match.index ), document.positionAt( match.index + match[ 0 ].length ) );
+                                    var range = new vscode.Range( editor.document.positionAt( match.index ), editor.document.positionAt( match.index + match[ 0 ].length ) );
                                     debug( "Inserting snippet " + snippet );
                                     editor.insertSnippet( new vscode.SnippetString( snippet ), range, { undoStopBefore: false, undoStopAfter: false } );
                                     ++matches;
