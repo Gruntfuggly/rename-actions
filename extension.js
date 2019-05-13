@@ -74,7 +74,7 @@ function activate( context )
                 {
                     outputChannel.append( uri + " changed..." );
 
-                    if( !micromatch.isMatch( uri.fsPath, watcher.excludes ) )
+                    if( watcher.excludes === undefined || !micromatch.isMatch( uri.fsPath, watcher.excludes ) )
                     {
                         var rebaseInProgress = false;
                         var folder = path.dirname( uri.fsPath );

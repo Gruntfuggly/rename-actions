@@ -28,6 +28,9 @@ allows for more advanced patterns.
 Glob patterns can include environment variables such as `${USER}` and also the
 vscode specific `${workspaceFolder}`.
 
+An optional array of globs to exclude can also be specified (see expanded
+example) to further reduce the scope of the file watcher.
+
 Example:
 
 ```
@@ -73,6 +76,7 @@ TEST( NewFile, PerformTest )
 "rename-actions.watchers": [
     {
         "files": "${workspaceFolder}/{*.h,*.cpp}",
+        "excludes": [ "**/moc_*.*" ],
         "actions": [
             {
                 "glob": "${workspaceFolder}/*.h",
