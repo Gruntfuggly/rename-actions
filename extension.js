@@ -74,74 +74,81 @@ function activate( context )
                 {
                     outputChannel.append( uri + " changed..." );
 
-                    var rebaseInProgress = false;
-                    var folder = path.dirname( uri.fsPath );
-                    var repo = ( exec( 'git rev-parse --show-toplevel', { cwd: folder } ) + "" ).trim();
-                    if( repo !== "" )
+                    if( !micromatch.isMatch( uri.fsPath, watcher.excludes ) )
                     {
-                        var rebaseFolder = path.join( repo, '.git', 'rebase-merge' );
-                        rebaseInProgress = fs.existsSync( rebaseFolder );
-                    }
-
-                    if( rebaseInProgress !== true )
-                    {
-                        debug( "" );
-                        var stop = false;
-                        watcher.actions.map( function( action )
+                        var rebaseInProgress = false;
+                        var folder = path.dirname( uri.fsPath );
+                        var repo = ( exec( 'git rev-parse --show-toplevel', { cwd: folder } ) + "" ).trim();
+                        if( repo !== "" )
                         {
-                            var glob = substituteVariables( action.glob );
+                            var rebaseFolder = path.join( repo, '.git', 'rebase-merge' );
+                            rebaseInProgress = fs.existsSync( rebaseFolder );
+                        }
 
-                            if( glob )
+                        if( rebaseInProgress !== true )
+                        {
+                            debug( "" );
+                            var stop = false;
+                            watcher.actions.map( function( action )
                             {
-                                debug( "Check glob " + glob );
-                            }
-                            if( glob === undefined || ( stop === false && micromatch.isMatch( uri.fsPath, glob ) ) )
-                            {
+                                var glob = substituteVariables( action.glob );
+
                                 if( glob )
                                 {
-                                    debug( "Matched" );
+                                    debug( "Check glob " + glob );
                                 }
-                                vscode.window.showTextDocument( uri, { preview: false } ).then( function( editor )
+                                if( glob === undefined || ( stop === false && micromatch.isMatch( uri.fsPath, glob ) ) )
                                 {
-                                    var content = editor.document.getText();
-                                    var regex = new RegExp( action.regex, "gm" );
-                                    debug( "Replacing " + action.regex + " in " + editor.document.fileName );
-                                    var matches = 0;
-                                    while( ( match = regex.exec( content ) ) !== null )
+                                    if( glob )
                                     {
-                                        var snippet = action.snippet;
-                                        match.map( function( group, index )
+                                        debug( "Matched" );
+                                    }
+                                    vscode.window.showTextDocument( uri, { preview: false } ).then( function( editor )
+                                    {
+                                        var content = editor.document.getText();
+                                        var regex = new RegExp( action.regex, "gm" );
+                                        debug( "Replacing " + action.regex + " in " + editor.document.fileName );
+                                        var matches = 0;
+                                        while( ( match = regex.exec( content ) ) !== null )
                                         {
-                                            if( index > 0 )
+                                            var snippet = action.snippet;
+                                            match.map( function( group, index )
                                             {
-                                                snippet = snippet.replace( new RegExp( "\\$\\{CAP" + index + "}", "g" ), match[ index ] );
-                                            }
-                                        } );
-                                        var range = new vscode.Range( editor.document.positionAt( match.index ), editor.document.positionAt( match.index + match[ 0 ].length ) );
-                                        debug( "Inserting snippet " + snippet );
-                                        editor.insertSnippet( new vscode.SnippetString( snippet ), range, { undoStopBefore: false, undoStopAfter: false } );
-                                        ++matches;
-                                    }
-                                    if( matches > 0 )
-                                    {
-                                        debug( "Replaced " + matches + " instances" );
-                                    }
-                                    else
-                                    {
-                                        debug( "No matches found" );
-                                    }
-                                    if( action.stop === true )
-                                    {
-                                        stop = true;
-                                        debug( "Stop processing actions" );
-                                    }
-                                } );
-                            }
-                        } );
+                                                if( index > 0 )
+                                                {
+                                                    snippet = snippet.replace( new RegExp( "\\$\\{CAP" + index + "}", "g" ), match[ index ] );
+                                                }
+                                            } );
+                                            var range = new vscode.Range( editor.document.positionAt( match.index ), editor.document.positionAt( match.index + match[ 0 ].length ) );
+                                            debug( "Inserting snippet " + snippet );
+                                            editor.insertSnippet( new vscode.SnippetString( snippet ), range, { undoStopBefore: false, undoStopAfter: false } );
+                                            ++matches;
+                                        }
+                                        if( matches > 0 )
+                                        {
+                                            debug( "Replaced " + matches + " instances" );
+                                        }
+                                        else
+                                        {
+                                            debug( "No matches found" );
+                                        }
+                                        if( action.stop === true )
+                                        {
+                                            stop = true;
+                                            debug( "Stop processing actions" );
+                                        }
+                                    } );
+                                }
+                            } );
+                        }
+                        else
+                        {
+                            debug( "rebase in progress" );
+                        }
                     }
                     else
                     {
-                        debug( "rebase in progress" );
+                        debug( "excluded" );
                     }
                 } );
             } );
