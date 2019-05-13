@@ -1,3 +1,6 @@
+# v0.0.6 - 2019-05-13
+- Ignore changes during a rebase
+
 # v0.0.5 - 2019-04-25
 - Fix document reference error
 
