@@ -1,3 +1,7 @@
+# v0.0.7 - 2019-12-17
+- Allow exclusion globs to be configured
+- Fix optional globs
+
 # v0.0.6 - 2019-05-13
 - Ignore changes during a rebase
 

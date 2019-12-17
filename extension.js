@@ -91,7 +91,7 @@ function activate( context )
                             var stop = false;
                             watcher.actions.map( function( action )
                             {
-                                var glob = substituteVariables( action.glob );
+                                var glob = action.glob && substituteVariables( action.glob );
 
                                 if( glob )
                                 {
