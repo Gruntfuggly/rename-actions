@@ -72,7 +72,7 @@ function activate( context )
 
                 fileWatcher.onDidCreate( function( uri )
                 {
-                    outputChannel.append( uri + " changed..." );
+                    debug( uri + " changed..." );
 
                     if( watcher.excludes === undefined || !micromatch.isMatch( uri.fsPath, watcher.excludes ) )
                     {

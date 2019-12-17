@@ -1,3 +1,5 @@
+- Fix logging error
+
 # v0.0.7 - 2019-12-17
 - Allow exclusion globs to be configured
 - Fix optional globs
