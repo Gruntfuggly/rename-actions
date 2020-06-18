@@ -2,18 +2,16 @@
 
 This extension automatically updates parts of a file when the file is renamed.
 
-<img src="https://raw.githubusercontent.com/Gruntfuggly/rename-actions/master/video.gif">
+![video](https://raw.githubusercontent.com/Gruntfuggly/rename-actions/master/video.gif)
 
-When a rename is detected<sup>\*</sup>, it searches through a list of
-regular expressions and replaces them with [snippets]
-(https://code.visualstudio.com/docs/editor/userdefinedsnippets#_creating-your-own-snippets).
+When a rename is detected, it searches through a list of
+regular expressions and replaces them with
+[snippets](https://code.visualstudio.com/docs/editor/userdefinedsnippets#_creating-your-own-snippets).
 
 This is useful if you have comment headers or include guards which are based on
 the file name, for example.
 
-<small><sup>\*</sup>Actually, whenever a file is created, but newly created
-files will be empty and therefore no changes will be made. The changes will be
-applied to files that are renamed or copied into the workspace folder.</small>
+*Note: Actually, it is also triggered whenever a file is created, but newly created files will be empty and therefore no changes will be made. The changes will be applied to files that are renamed or copied into the workspace folder.*
 
 ## Configuration
 
@@ -33,7 +31,7 @@ example) to further reduce the scope of the file watcher.
 
 Example:
 
-```
+```json
 "rename-actions.watchers": [
     {
         "files": "**/{*.h,*.cpp}",
@@ -55,16 +53,20 @@ the file.
 If the regex contains capture groups, these can be reinserted into the snippet
 using `${CAPn}`. For example:
 
-```
+```json
     "regex": "^TEST\\(\\s.*,\\s(.*)\\s\\)$",
     "snippet": "TEST( ${TM_FILENAME_BASE}, ${CAP1} )"
 ```
+
 will change:
-```
+
+```txt
 TEST( OldFile, PerformTest )
 ```
+
 into
-```
+
+```txt
 TEST( NewFile, PerformTest )
 ```
 
@@ -72,7 +74,7 @@ TEST( NewFile, PerformTest )
 
 ### Expanded Example
 
-```
+```json
 "rename-actions.watchers": [
     {
         "files": "${workspaceFolder}/{*.h,*.cpp}",
@@ -121,14 +123,8 @@ Marketplace [here](https://marketplace.visualstudio.com/items?itemName=Gruntfugg
 
 ### Source Code
 
-The source code is available on GitHub [here]
-(https://github.com/Gruntfuggly/rename-actions).
+The source code is available on GitHub [here](https://github.com/Gruntfuggly/rename-actions).
 
 ## Credits
 
-Icon made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">
-Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">
-www.flaticon.com</a> is licensed by <a
-href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0"
-target="_blank">CC 3.0 BY</a></div>
-
+Icon made by [Smashicons](https://www.flaticon.com/authors/smashicons) from [Flaticon](https://www.flaticon.com/) is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
