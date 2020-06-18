@@ -1,5 +1,7 @@
 # Rename Actions
 
+## v0.0.9 - 2020-06-18
+
 - Fix markdown lint errors in CHANGELOG.md and README.md
 - Fix error generated when not in a git repo
 

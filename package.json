@@ -3,7 +3,7 @@
     "displayName": "Rename Actions",
     "description": "Perform actions when a file is renamed",
     "icon": "icon.png",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "publisher": "Gruntfuggly",
     "repository": "https://github.com/Gruntfuggly/rename-actions",
     "engines": {
