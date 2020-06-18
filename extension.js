@@ -78,7 +78,14 @@ function activate( context )
                     {
                         var rebaseInProgress = false;
                         var folder = path.dirname( uri.fsPath );
-                        var repo = ( exec( 'git rev-parse --show-toplevel', { cwd: folder } ) + "" ).trim();
+                        var repo = "";
+                        try
+                        {
+                            repo = ( exec( 'git rev-parse --show-toplevel', { cwd: folder } ) + "" ).trim();
+                        }
+                        catch( e )
+                        {
+                        }
                         if( repo !== "" )
                         {
                             var rebaseFolder = path.join( repo, '.git', 'rebase-merge' );
